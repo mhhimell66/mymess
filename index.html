@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="bn" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mess Meal Manager Cloud-Live</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', 'Hind Siliguri', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .light body { background-color: #f8fafc; color: #1e293b; }
+        .dark body { background-color: #0f172a; color: #f1f5f9; }
+        .meal-input { width: 75px; text-align: center; font-weight: 700; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 4px; font-size: 16px; transition: all 0.2s; }
+        .light .meal-input { color: #1e40af; background-color: #ffffff; border-color: #cbd5e1; }
+        .dark .meal-input { color: #60a5fa; background-color: #1e293b; border-color: #475569; }
+        .meal-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); outline: none; }
+        .cost-input { width: 85px; text-align: center; border: none; background: transparent; padding: 4px; font-size: 14px; font-weight: 600; }
+        .light .cost-input { color: #1e293b; }
+        .dark .cost-input { color: #f1f5f9; }
+        .cost-input:focus { outline: none; }
+        @media print {
+            .no-print, button, form, .badge-container, #theme-toggle-btn { display: none !important; }
+            .print-area { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; background: white !important; color: black !important; }
+            table { width: 100% !important; border-collapse: collapse !important; }
+            th, td { border: 1px solid #94a3b8 !important; padding: 8px !important; color: #000 !important; }
+            th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
+            .dark body { background-color: white !important; color: black !important; }
+            .dark .print-area { background-color: white !important; color: black !important; border: none !important; }
+            .dark tr, .dark td, .dark th { color: black !important; border-color: #000 !important; }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-12">
+
+    <!-- 🌐 Global Cloud Sync Indicator -->
+    <div id="cloud-loader" class="fixed top-4 left-4 z-50 bg-slate-950/95 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xl border border-slate-800 hidden">
+        <i class="fa-solid fa-arrows-spin fa-spin text-emerald-400 text-sm"></i> <span id="cloud-loader-text">ক্লাউড সার্ভার সিঙ্ক হচ্ছে...</span>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white shadow-md no-print">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-600 text-white p-2.5 rounded-xl shadow-inner animate-pulse">
+                    <i class="fa-solid fa-globe text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Mess Meal Manager <span class="text-emerald-400 font-bold text-xs px-2 py-0.5 rounded-md bg-emerald-950 border border-emerald-800 ml-1">🌐 ONLINE LIVE</span></h1>
+                    <p class="text-xs text-slate-400">যেকোনো ব্রাউজার ফ্রেন্ডলি ক্লাউড ব্যাকআপ মেস সিস্টেম</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="fetchFromCloud()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 p-2.5 rounded-xl border border-slate-700 cursor-pointer text-xs font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-cloud-arrow-down animate-bounce"></i> ডাটা লোড/রিফ্রেশ
+                </button>
+                <button id="theme-toggle-btn" onclick="toggleTheme()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 p-2.5 rounded-xl border border-slate-700 cursor-pointer transition-colors">
+                    <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
+                </button>
+                <div class="flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-xl border border-slate-700 text-sm font-medium">
+                    <i class="fa-regular fa-calendar-days text-blue-400"></i>
+                    <span>জুলাই, ২০২৬</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 mt-6 grid grid-cols-1 gap-6">
+
+        <!-- Live Summary Dashboard -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 no-print">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl p-5 shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-blue-100 font-medium">মোট মিল সংখ্যা</p>
+                    <h3 class="text-3xl font-bold mt-1 tracking-tight" id="live-total-meals">0</h3>
+                </div>
+                <div class="bg-white/10 p-3 rounded-xl"><i class="fa-solid fa-utensils text-2xl opacity-90"></i></div>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-5 shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-emerald-100 font-medium">মোট বাজার খরচ</p>
+                    <h3 class="text-3xl font-bold mt-1 tracking-tight" id="live-total-cost">0 ৳</h3>
+                </div>
+                <div class="bg-white/10 p-3 rounded-xl"><i class="fa-solid fa-cart-shopping text-2xl opacity-90"></i></div>
+            </div>
+            <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-2xl p-5 shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-amber-100 font-medium">লাইভ মিল রেট</p>
+                    <h3 class="text-3xl font-extrabold mt-1 tracking-tight" id="live-meal-rate">0.00 ৳</h3>
+                </div>
+                <div class="bg-white/10 p-3 rounded-xl"><i class="fa-solid fa-scale-balanced text-2xl"></i></div>
+            </div>
+        </section>
+
+        <!-- Member Control Panel -->
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-users text-blue-600 dark:text-blue-400"></i> মেম্বার কন্ট্রোল প্যানেল
+            </h3>
+            <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                <input type="text" id="new-member-name" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:outline-hidden focus:border-blue-500 font-medium placeholder-slate-400 text-sm" placeholder="নতুন মেম্বারের নাম লিখুন...">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm cursor-pointer flex items-center justify-center gap-2 shadow-xs" onclick="addMember()">
+                    <i class="fa-solid fa-user-plus"></i> যোগ করুন
+                </button>
+            </div>
+            <div>
+                <span class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">বর্তমান মেম্বার তালিকা:</span>
+                <div class="flex flex-wrap gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700 border-dashed min-h-12" id="manage-members-list"></div>
+            </div>
+        </section>
+
+        <!-- Daily Meal Entry Form -->
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 gap-4">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-check text-blue-600 dark:text-blue-400"></i> প্রতিদিনের মিল এন্ট্রি
+                </h3>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-600 dark:text-slate-400">তারিখ:</span>
+                    <input type="date" id="entry-date" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm text-slate-700 bg-slate-50 dark:bg-slate-950" value="2026-07-19">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="daily-meal-inputs"></div>
+            
+            <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700">
+                <button class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md cursor-pointer flex items-center justify-center gap-2 text-sm" onclick="saveDailyMeals()">
+                    <i class="fa-regular fa-floppy-disk"></i> মিল এন্ট্রি অনলাইনে সেভ করুন
+                </button>
+            </div>
+        </section>
+
+        <!-- Market Cost Section -->
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-basket-shopping text-emerald-600 dark:text-emerald-400"></i> বাজার খরচ বিবরণী
+                </h3>
+                <button onclick="syncToCloud(false)" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer shadow-xs"><i class="fa-solid fa-cloud-arrow-up"></i> বাজার খরচ অনলাইনে সেভ করুন</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="market-cost-inputs"></div>
+        </section>
+
+        <!-- Control Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 no-print">
+            <button class="bg-rose-700 hover:bg-rose-800 text-white font-bold py-3 px-5 rounded-xl cursor-pointer flex items-center justify-center gap-2 text-sm" onclick="startNewMonth()">
+                <i class="fa-solid fa-calendar-plus"></i> New Month (রিসেট)
+            </button>
+            <button class="flex-1 bg-white dark:bg-slate-800 dark:hover:bg-slate-700/60 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 font-bold py-3 px-6 rounded-xl cursor-pointer flex items-center justify-center gap-2 text-sm" onclick="toggleMonthlySheet()">
+                <i class="fa-solid fa-table-list text-blue-600 dark:text-blue-400"></i> পুরো মাসের মাস্টার শিট
+            </button>
+            <button class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl cursor-pointer flex items-center justify-center gap-2 text-sm" onclick="calculateFinalSummary()">
+                <i class="fa-solid fa-chart-pie"></i> ফাইনাল হিসাব নিকাশ
+            </button>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl hidden items-center justify-center gap-2 text-sm" id="pdf-btn" onclick="downloadPDF()">
+                <i class="fa-solid fa-file-pdf"></i> PDF / প্রিন্ট করুন
+            </button>
+        </div>
+
+        <!-- Master Sheet -->
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 hidden no-print" id="monthly-sheet-card">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-indigo-600 dark:text-indigo-400"></i> পুরো জুলাই মাসের মিল ছক (Master Sheet)
+            </h3>
+            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                <table class="w-full text-center text-xs">
+                    <thead><tr class="bg-slate-800 text-white font-semibold" id="sheet-header"><th class="p-2.5">তারিখ</th></tr></thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-600 dark:text-slate-300 font-medium" id="sheet-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Final Report Section -->
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500 shadow-xl p-6 sm:p-8 hidden print-area" id="result-section">
+            <div class="text-center pb-5 border-b-2 border-slate-100 dark:border-slate-700">
+                <span class="inline-block bg-emerald-100 text-emerald-800 font-bold text-xs uppercase tracking-widest px-3 py-1 rounded-full mb-2">চুড়ান্ত মেস রিপোর্ট</span>
+                <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">মিল ও বাজার খরচ বিবরণী</h2>
+                <p class="text-sm text-slate-500 font-medium mt-1">চলতি মাস: জুলাই, ২০২৬</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 my-6 text-sm font-semibold" id="summary-text"></div>
+            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                <table class="w-full text-center text-sm">
+                    <thead>
+                        <tr class="bg-slate-900 dark:bg-slate-950 text-white font-semibold">
+                            <th class="p-3 border border-slate-800 dark:border-slate-700">নাম</th>
+                            <th class="p-3 border border-slate-800 dark:border-slate-700">মোট মিল</th>
+                            <th class="p-3 border border-slate-800 dark:border-slate-700">মোট বাজার</th>
+                            <th class="p-3 border border-slate-800 dark:border-slate-700">মিল খরচ</th>
+                            <th class="p-3 border border-slate-800 dark:border-slate-700">অবস্থা (দেনা/পাওনা)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-700 dark:text-slate-300 font-medium" id="report-body"></tbody>
+                </table>
+            </div>
+            <div class="mt-8 pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-end items-center text-xs text-slate-400">
+                <p>রিপোর্ট তৈরির সময়: <span id="current-print-time" class="font-medium text-slate-500"></span></p>
+            </div>
+        </section>
+    </main>
+
+<script>
+    // 🔗 !!! আপনার Google Web App URL-টি এখানে বসান !!!
+    const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCi-GlJ46KWi31gOIT4_Qo5a06CqH9x2jGNEQWVwzZESz9HEz6KrFm2zcd81t_Q-lS/exec";
+
+    let members = ["সাকিব", "আদিল", "রুমান", "আহসান", "শাহিন", "শরিফুল", "হিমেল", "সাদরিল", "সোহাগ", "আসিফ", "নাজমুল"];
+    let mealDatabase = {};
+    let marketCostsList = {};
+
+    window.onload = function() {
+        applyTheme(localStorage.getItem('themeMode') || 'light');
+        // কোনো লোকাল ক্যাশ থাকলে তা রেন্ডার করবে প্রথমে
+        if(localStorage.getItem('messMembers')) members = JSON.parse(localStorage.getItem('messMembers'));
+        if(localStorage.getItem('mealDatabase')) mealDatabase = JSON.parse(localStorage.getItem('mealDatabase'));
+        if(localStorage.getItem('marketCostsList')) marketCostsList = JSON.parse(localStorage.getItem('marketCostsList'));
+        
+        refreshUI();
+        fetchFromCloud(); // এরপর সরাসরি ক্লাউড শিট থেকে আপ-টু-ডেট ডাটা টেনে আনবে
+    };
+
+    function showLoader(text) {
+        const loader = document.getElementById('cloud-loader');
+        document.getElementById('cloud-loader-text').innerText = text;
+        loader.classList.remove('hidden');
+    }
+    function hideLoader() { document.getElementById('cloud-loader').classList.add('hidden'); }
+
+    // ক্লাউডে ডাটা সেভ করার ফাংশন
+    function syncToCloud(silent = false) {
+        if (!GOOGLE_WEB_APP_URL || GOOGLE_WEB_APP_URL.includes("এখানে_আপনার")) return;
+        if(!silent) showLoader("গুগল ড্রাইভে আপলোড হচ্ছে...");
+        
+        let payload = { members: members, mealDatabase: mealDatabase, marketCostsList: marketCostsList };
+
+        fetch(GOOGLE_WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            if(!silent) { hideLoader(); alert("🎉 গুগল ড্রাইভ ক্লাউডে সফলভাবে সেভ হয়েছে!"); }
+        }).catch(err => { console.error(err); hideLoader(); });
+    }
+
+    // ক্লাউড থেকে ডাটা ব্রাউজারে আনার ফাংশন
+    function fetchFromCloud() {
+        if (!GOOGLE_WEB_APP_URL || GOOGLE_WEB_APP_URL.includes("এখানে_আপনার")) return;
+        showLoader("গুগল ড্রাইভ থেকে লাইভ ডাটা লোড হচ্ছে...");
+
+        fetch(GOOGLE_WEB_APP_URL)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.members && data.mealDatabase) {
+                members = data.members;
+                mealDatabase = data.mealDatabase;
+                marketCostsList = data.marketCostsList || {};
+                
+                localStorage.setItem('messMembers', JSON.stringify(members));
+                localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
+                localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+                refreshUI();
+            }
+            hideLoader();
+        }).catch(err => { console.error("Cloud error, using local storage", err); hideLoader(); });
+    }
+
+    function toggleTheme() {
+        let current = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+        applyTheme(current);
+    }
+    function applyTheme(mode) {
+        const icon = document.getElementById('theme-icon');
+        if(mode === 'dark') {
+            document.documentElement.classList.add('dark'); localStorage.setItem('themeMode', 'dark');
+            if(icon) { icon.classList.replace('fa-moon', 'fa-sun'); }
+        } else {
+            document.documentElement.classList.remove('dark'); localStorage.setItem('themeMode', 'light');
+            if(icon) { icon.classList.replace('fa-sun', 'fa-moon'); }
+        }
+    }
+
+    function refreshUI() {
+        const dailyGrid = document.getElementById('daily-meal-inputs');
+        const costContainer = document.getElementById('market-cost-inputs');
+        const manageList = document.getElementById('manage-members-list');
+        dailyGrid.innerHTML = ""; costContainer.innerHTML = ""; manageList.innerHTML = "";
+
+        members.forEach(name => {
+            dailyGrid.innerHTML += `
+                <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 transition-all">
+                    <span class="font-semibold text-slate-700 dark:text-slate-200 text-sm ml-2">${name}</span>
+                    <input type="text" class="meal-input" id="daily-${name}" value="0" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';" onclick="this.select();">
+                </div>
+            `;
+            manageList.innerHTML += `
+                <div class="inline-flex items-center gap-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-1 rounded-full text-xs font-semibold border shadow-3xs">
+                    <span>${name}</span>
+                    <button class="text-rose-500 font-bold ml-1 cursor-pointer" onclick="deleteMember('${name}')">×</button>
+                </div>
+            `;
+
+            let savedCosts = marketCostsList[name] || [0];
+            let rowHtml = `
+                <div class="bg-slate-50 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col gap-3" id="market-row-${name}">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <span class="font-bold text-slate-800 dark:text-slate-200 text-sm"><i class="fa-regular fa-user text-blue-500 mr-1.5"></i> ${name}</span>
+                        <span class="text-xs font-bold text-emerald-700 bg-emerald-50 dark:bg-emerald-950/50 border px-2 py-0.5 rounded-md" id="total-label-${name}">মোট: 0 ৳</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div id="fields-holder-${name}" class="flex flex-wrap gap-2 items-center">
+            `;
+            savedCosts.forEach((cost, index) => {
+                rowHtml += `
+                    <div class="inline-flex items-center bg-white dark:bg-slate-800 border rounded-lg p-1" id="wrapper-${name}-${index}">
+                        <input type="text" class="cost-input member-cost-field-${name}" value="${cost}" oninput="calculateSingleMemberTotal('${name}')" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';" onclick="this.select();">
+                        ${index > 0 ? `<button class="text-rose-500 px-1.5 text-sm cursor-pointer" onclick="removeCostField('${name}', ${index})">×</button>` : ''}
+                    </div>
+                `;
+            });
+            rowHtml += `
+                        </div>
+                        <button class="bg-slate-200 dark:bg-slate-600 font-bold px-2.5 py-1.5 rounded-lg text-xs cursor-pointer" onclick="addCostField('${name}')">+ নতুন</button>
+                    </div>
+                </div>
+            `;
+            costContainer.innerHTML += rowHtml;
+            calculateSingleMemberTotal(name);
+        });
+
+        loadSavedMealsForDate(); buildMonthlySheet(); updateLiveDashboard();
+    }
+
+    function calculateSingleMemberTotal(name) {
+        let fields = document.getElementsByClassName(`member-cost-field-${name}`);
+        let sum = 0; let costsArray = [];
+        for(let i=0; i<fields.length; i++) {
+            let val = parseFloat(fields[i].value) || 0; sum += val; costsArray.push(val);
+        }
+        document.getElementById(`total-label-${name}`).innerText = `মোট: ${sum.toFixed(0)} ৳`;
+        marketCostsList[name] = costsArray;
+        localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+        updateLiveDashboard();
+        return sum;
+    }
+
+    function addCostField(name) {
+        let holder = document.getElementById(`fields-holder-${name}`);
+        let newIndex = holder.children.length;
+        let newFieldHtml = `
+            <div class="inline-flex items-center bg-white dark:bg-slate-800 border rounded-lg p-1" id="wrapper-${name}-${newIndex}">
+                <input type="text" class="cost-input member-cost-field-${name}" value="0" oninput="calculateSingleMemberTotal('${name}')" onfocus="if(this.value=='0')this.value='';" onblur="if(this.value=='')this.value='0';" onclick="this.select();">
+                <button class="text-rose-500 px-1.5 text-sm cursor-pointer" onclick="removeCostField('${name}', ${newIndex})">×</button>
+            </div>
+        `;
+        holder.insertAdjacentHTML('beforeend', newFieldHtml);
+    }
+
+    function removeCostField(name, index) {
+        let el = document.getElementById(`wrapper-${name}-${index}`);
+        if(el) { el.remove(); calculateSingleMemberTotal(name); syncToCloud(true); }
+    }
+
+    document.getElementById('entry-date').addEventListener('change', loadSavedMealsForDate);
+
+    function loadSavedMealsForDate() {
+        let date = document.getElementById('entry-date').value;
+        let dayMeals = mealDatabase[date] || {};
+        members.forEach(name => {
+            const field = document.getElementById(`daily-${name}`);
+            if(field) field.value = dayMeals[name] !== undefined ? dayMeals[name] : 0;
+        });
+        updateLiveDashboard();
+    }
+
+    function addMember() {
+        let nameInput = document.getElementById('new-member-name');
+        let name = nameInput.value.trim();
+        if (!name || members.includes(name)) return alert("সঠিক বা ইউনিক নাম দিন!");
+
+        members.push(name);
+        localStorage.setItem('messMembers', JSON.stringify(members));
+        marketCostsList[name] = [0];
+        localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+        refreshUI(); syncToCloud(true);
+    }
+
+    function deleteMember(name) {
+        if(confirm(`🔴 "${name}" কে বাদ দিলে সমস্ত ডাটা মুছে যাবে। নিশ্চিত?`)) {
+            if(confirm(`⚠️ শেষ সতর্কতা! বাদ দিতে চান?`)) {
+                members = members.filter(m => m !== name);
+                localStorage.setItem('messMembers', JSON.stringify(members));
+                delete marketCostsList[name];
+                localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+                refreshUI(); syncToCloud(false);
+            }
+        }
+    }
+
+    function startNewMonth() {
+        if (confirm("⚠️ নতুন মাস শুরু করলে সমস্ত ক্লাউড রেকর্ড মুছে যাবে! নিশ্চিত?")) {
+            if (confirm("🛑 শেষবার নিশ্চিত করুন!")) {
+                mealDatabase = {}; marketCostsList = {};
+                members.forEach(name => { marketCostsList[name] = [0]; });
+                localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
+                localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+                document.getElementById('result-section').classList.add('hidden');
+                document.getElementById('pdf-btn').classList.add('hidden');
+                refreshUI();
+                
+                if (GOOGLE_WEB_APP_URL && !GOOGLE_WEB_APP_URL.includes("এখানে_আপনার")) {
+                    showLoader("ক্লাউড ডাটা রিসেট হচ্ছে...");
+                    fetch(GOOGLE_WEB_APP_URL, {
+                        method: "POST", mode: "no-cors",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ action: "RESET" })
+                    }).then(() => { hideLoader(); alert("🎉 ক্লাউড ডাটা রিসেট হয়েছে!"); });
+                }
+            }
+        }
+    }
+
+    function saveDailyMeals() {
+        let date = document.getElementById('entry-date').value;
+        if(!date) return alert("তারিখ দিন!");
+        if(!mealDatabase[date]) mealDatabase[date] = {};
+        
+        members.forEach(name => {
+            mealDatabase[date][name] = parseFloat(document.getElementById(`daily-${name}`).value) || 0;
+        });
+
+        localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
+        buildMonthlySheet(); updateLiveDashboard();
+        syncToCloud(false); // অনলাইনে আপলোড
+    }
+
+    function updateLiveDashboard() {
+        let totalMeals = 0; let totalMarketCost = 0;
+        members.forEach(name => {
+            (marketCostsList[name] || [0]).forEach(val => totalMarketCost += parseFloat(val) || 0);
+        });
+        for (let date in mealDatabase) {
+            members.forEach(name => {
+                if(members.includes(name)) totalMeals += (parseFloat(mealDatabase[date][name]) || 0);
+            });
+        }
+        let mealRate = totalMeals > 0 ? totalMarketCost / totalMeals : 0;
+        document.getElementById('live-total-meals').innerText = totalMeals.toFixed(1).replace('.0', '');
+        document.getElementById('live-total-cost').innerText = totalMarketCost.toLocaleString('bn-BD') + " ৳";
+        document.getElementById('live-meal-rate').innerText = mealRate.toFixed(2) + " ৳";
+    }
+
+    function buildMonthlySheet() {
+        const header = document.getElementById('sheet-header');
+        const tbody = document.getElementById('sheet-body');
+        header.innerHTML = `<th class="p-2.5 bg-slate-900 text-white">তারিখ</th>`;
+        members.forEach(name => { header.innerHTML += `<th class="p-2.5 bg-slate-900 text-white">${name}</th>`; });
+        tbody.innerHTML = "";
+
+        for (let day = 1; day <= 31; day++) {
+            let dayStr = day < 10 ? '0' + day : day;
+            let fullDate = `2026-07-${dayStr}`;
+            let dayMeals = mealDatabase[fullDate] || {};
+            let rowHtml = `<tr class="hover:bg-slate-100 dark:hover:bg-slate-700/30 text-center"><td class="p-2 font-bold">${dayStr} জুলাই</td>`;
+            members.forEach(name => {
+                let count = dayMeals[name] !== undefined ? dayMeals[name] : "-";
+                rowHtml += `<td class="p-2 border border-slate-200 dark:border-slate-700">${count}</td>`;
+            });
+            rowHtml += `</tr>`; tbody.innerHTML += rowHtml;
+        }
+    }
+
+    function toggleMonthlySheet() { document.getElementById('monthly-sheet-card').classList.toggle('hidden'); }
+
+    function calculateFinalSummary() {
+        let totalMeals = 0; let totalMarketCost = 0; let memberTotalMeals = {};
+        members.forEach(name => {
+            memberTotalMeals[name] = 0;
+            (marketCostsList[name] || [0]).forEach(val => totalMarketCost += parseFloat(val) || 0);
+        });
+        for (let date in mealDatabase) {
+            members.forEach(name => {
+                if(members.includes(name)) {
+                    memberTotalMeals[name] += (parseFloat(mealDatabase[date][name]) || 0);
+                    totalMeals += (parseFloat(mealDatabase[date][name]) || 0);
+                }
+            });
+        }
+        let mealRate = totalMeals > 0 ? totalMarketCost / totalMeals : 0;
+
+        document.getElementById('summary-text').innerHTML = `
+            <div class="bg-white dark:bg-slate-800 p-3 border rounded-xl text-center"><span class="text-xs text-slate-400">মোট মিল</span><span class="text-lg font-bold block">${totalMeals.toFixed(1).replace('.0', '')} টি</span></div>
+            <div class="bg-white dark:bg-slate-800 p-3 border rounded-xl text-center"><span class="text-xs text-slate-400">মোট বাজার</span><span class="text-lg font-bold block">${totalMarketCost.toFixed(2)} ৳</span></div>
+            <div class="bg-emerald-50 dark:bg-emerald-950/40 p-3 border rounded-xl text-center"><span class="text-xs text-emerald-600 block">ফাইনাল মিল রেট</span><span class="text-xl font-black text-emerald-700">${mealRate.toFixed(4)} ৳</span></div>
+        `;
+
+        const tbody = document.getElementById('report-body'); tbody.innerHTML = "";
+        members.forEach(name => {
+            let meals = memberTotalMeals[name];
+            let cost = 0; (marketCostsList[name] || [0]).forEach(val => cost += parseFloat(val) || 0);
+            let mealCost = meals * mealRate; let balance = cost - mealCost;
+            let statusStr = balance >= 0 ? 
+                `<span class="bg-emerald-50 text-emerald-700 border font-bold px-2 py-0.5 rounded text-xs">পাবে (+) ${balance.toFixed(2)} ৳</span>` : 
+                `<span class="bg-rose-50 text-rose-700 border font-bold px-2 py-0.5 rounded text-xs">দিবে (-) ${Math.abs(balance).toFixed(2)} ৳</span>`;
+
+            tbody.innerHTML += `
+                <tr class="text-center">
+                    <td class="p-3 border font-bold">${name}</td>
+                    <td class="p-3 border">${meals.toFixed(1).replace('.0', '')} টি</td>
+                    <td class="p-3 border font-semibold">${cost.toFixed(1)} ৳</td>
+                    <td class="p-3 border text-slate-500">${mealCost.toFixed(1)} ৳</td>
+                    <td class="p-3 border">${statusStr}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('result-section').classList.remove('hidden');
+        document.getElementById('pdf-btn').classList.replace('hidden', 'flex');
+        document.getElementById('current-print-time').innerText = new Date().toLocaleString('bn-BD');
+        document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+        syncToCloud(true);
+    }
+
+    function downloadPDF() {
+        const originalTitle = document.title; document.title = "মিল_হিসাব";
+        window.print(); document.title = originalTitle;
+    }
+</script>
+</body>
+</html>
