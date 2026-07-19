@@ -12,7 +12,6 @@
         .light body { background-color: #f8fafc; color: #1e293b; }
         .dark body { background-color: #0f172a; color: #f1f5f9; }
         
-        /* কিবোর্ড ইনপুট নিশ্চিত করার জন্য এক্সট্রা সিএসএস */
         input[type="text"], select, input[type="date"], input[type="month"] {
             -webkit-user-select: text !important;
             user-select: text !important;
@@ -49,7 +48,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight">Mess Meal Manager <span class="text-emerald-400 font-bold text-xs px-2 py-0.5 rounded-md bg-emerald-950 border border-emerald-800 ml-1">🌐 ONLINE LIVE</span></h1>
-                    <p class="text-xs text-slate-400">F-3 ভবন কোয়ার্টার </p>
+                    <p class="text-xs text-slate-400">মাল্টিপল বাজার এন্ট্রি ও অটো-যোগ ফিচার সমৃদ্ধ ম্যানেজার</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -97,7 +96,7 @@
         <!-- Member Control Panel -->
         <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
             <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-users text-blue-600 dark:text-blue-400"></i> মেম্বার ম্যানেজমেন্ট (নতুন মেম্বার যোগ করুন)
+                <i class="fa-solid fa-users text-blue-600 dark:text-blue-400"></i> মেম্বার ম্যানেজমেন্ট
             </h3>
             <div class="flex flex-col sm:flex-row gap-2 mb-4">
                 <input type="text" id="new-member-name" class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:outline-hidden focus:border-blue-500 font-medium placeholder-slate-400 text-sm" placeholder="নতুন মেম্বারের নাম লিখুন...">
@@ -106,7 +105,7 @@
                 </button>
             </div>
             <div>
-                <span class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">বর্তমান মেম্বার তালিকা ও রিমুভ অপশন:</span>
+                <span class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">বর্তমান মেম্বার তালিকা:</span>
                 <div class="flex flex-wrap gap-2 p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700 border-dashed min-h-12" id="manage-members-list"></div>
             </div>
         </section>
@@ -115,7 +114,7 @@
         <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-4 mb-4 gap-4">
                 <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <i class="fa-regular fa-calendar-check text-blue-600 dark:text-blue-400"></i> প্রতিদিনের মিল এন্ট্রি (Dropdown)
+                    <i class="fa-regular fa-calendar-check text-blue-600 dark:text-blue-400"></i> প্রতিদিনের মিল এন্ট্রি
                 </h3>
                 <div class="flex items-center gap-2">
                     <span class="text-sm font-semibold text-slate-600 dark:text-slate-400">তারিখ:</span>
@@ -132,14 +131,13 @@
                 </div>
                 <div class="w-full sm:w-48">
                     <label class="block text-xs font-bold text-slate-500 mb-1">মিলের সংখ্যা:</label>
-                    <input type="text" inputmode="decimal" id="meal-count-input" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden" placeholder="উদা: ১.৫">
+                    <input type="text" id="meal-count-input" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden" placeholder="উদা: ১.৫">
                 </div>
                 <button class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm cursor-pointer shadow-xs whitespace-nowrap" onclick="addMealToTemporary()">
                     <i class="fa-solid fa-plus"></i> এন্ট্রি করুন
                 </button>
             </div>
 
-            <!-- আজকের বর্তমান এন্ট্রি ভিউ -->
             <div class="mt-4">
                 <span class="text-xs font-bold text-slate-400 block mb-2">আজকের সাময়িক মিল তালিকা (এখনো সেভ হয়নি):</span>
                 <div id="today-temporary-meal-list" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold"></div>
@@ -173,25 +171,25 @@
         <!-- Market Cost Section (Dropdown) -->
         <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
             <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
-                <i class="fa-solid fa-basket-shopping text-emerald-600 dark:text-emerald-400"></i> বাজার খরচ বিবরণী (Dropdown)
+                <i class="fa-solid fa-basket-shopping text-emerald-600 dark:text-emerald-400"></i> বাজার খরচ বিবরণী
             </h3>
-            <p class="text-xs font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 p-2.5 rounded-xl mb-4">
-                💡 <b>ভুল সংশোধন টিপস:</b> যদি ভুল করে কারো বাজার খরচ বেশি লিখে ফেলেন, তবে এখানে তার নাম সিলেক্ট করে যত টাকা কমাতে চান তার আগে একটি <b>মাইনাস (-)</b> চিহ্ন দিয়ে দিন (যেমন: -৫০০)। তাহলেই হিসাব অটো সংশোধন হয়ে যাবে।
+            <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 p-2.5 rounded-xl mb-4">
+                ℹ️ <b>মাল্টিপল এন্ট্রি রুলস:</b> একই মেম্বারের একাধিক আলাদা বাজার খরচ এন্ট্রি করলে তা অটোমেটিক পূর্বের খরচের সাথে <b>যোগ</b> হয়ে যাবে। কমাতে চাইলে সংখ্যার আগে মাইনাস (-) চিহ্ন দিন।
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 items-end bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mb-4">
                 <div class="flex-1 w-full">
                     <label class="block text-xs font-bold text-slate-500 mb-1">মেম্বার সিলেক্ট করুন:</label>
-                    <select id="market-member-dropdown" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden" onchange="updateSelectedMemberMarketDisplay()">
+                    <select id="market-member-dropdown" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden">
                         <option value="">বাছাই করুন...</option>
                     </select>
                 </div>
                 <div class="w-full sm:w-48">
                     <label class="block text-xs font-bold text-slate-500 mb-1">বাজার খরচ (৳):</label>
-                    <input type="text" id="market-cost-input" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden" placeholder="উদা: ৫০০ অথবা -১০০">
+                    <input type="text" id="market-cost-input" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden" placeholder="উদা: ৫০০">
                 </div>
                 <button class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm cursor-pointer shadow-xs whitespace-nowrap" onclick="submitMarketCost()">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> খরচে যোগ করুন
+                    <i class="fa-solid fa-plus"></i> খরচে যোগ করুন
                 </button>
             </div>
 
@@ -268,7 +266,7 @@
     </main>
 
 <script>
-    // 🔗 লাইন ২১০: এখানে আপনার গুগল স্ক্রিপ্ট থেকে পাওয়া Web App URL বসাবেন
+    // 🔗 লাইন ২৬৬: এখানে আপনার গুগল স্ক্রিপ্ট থেকে পাওয়া Web App URL বসাবেন
     const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCi-GlJ46KWi31gOIT4_Qo5a06CqH9x2jGNEQWVwzZESz9HEz6KrFm2zcd81t_Q-lS/exec";
 
     let members = [];
@@ -487,7 +485,7 @@
 
         if(!name) return alert("অনুগ্রহ করে মেম্বার সিলেক্ট করুন!");
         let parsedMeal = parseFloat(countInput);
-        if(isNaN(parsedMeal) || parsedMeal < 0) return alert("সঠি ক সংখ্যা টাইপ করুন (উদা: ১.৫ অথবা ২)!");
+        if(isNaN(parsedMeal) || parsedMeal < 0) return alert("সঠিক সংখ্যা টাইপ করুন (উদা: ১.৫ অথবা ২)!");
 
         temporaryMeals[name] = parsedMeal;
         renderTemporaryMealList();
@@ -509,10 +507,7 @@
         });
     }
 
-    function updateSelectedMemberMarketDisplay() {
-        document.getElementById('market-cost-input').value = "";
-    }
-
+    // 🌟 ফিক্সড বাজার এন্ট্রি ফাংশন: এটি নতুন ইনপুটকে আগের হিসাবের সাথে যোগ করে দিবে
     function submitMarketCost() {
         const name = document.getElementById('market-member-dropdown').value;
         const costVal = document.getElementById('market-cost-input').value.trim();
@@ -524,7 +519,8 @@
 
         if(!marketCostsList[selectedMonth]) marketCostsList[selectedMonth] = {};
         
-        if(!marketCostsList[selectedMonth][name] || (marketCostsList[selectedMonth][name].length === 1 && marketCostsList[selectedMonth][name][0] === 0)) {
+        // যদি মেম্বারের আগে কোনো এন্ট্রি না থাকে তবে নতুন অ্যারে তৈরি করবে, নয়তো পূর্বের লিস্টে পুশ করবে
+        if(!marketCostsList[selectedMonth][name]) {
             marketCostsList[selectedMonth][name] = [parsedCost];
         } else {
             marketCostsList[selectedMonth][name].push(parsedCost);
@@ -537,10 +533,13 @@
         updateLiveDashboard();
         syncToCloud(true);
         
+        // টোটাল কারেন্ট খরচ ক্যালকুলেট করে অ্যালার্ট দেখাবে
+        let currentTotal = marketCostsList[selectedMonth][name].reduce((a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0), 0);
+        
         if (parsedCost < 0) {
-            alert(`✅ ${name} - এর হিসাব থেকে ${Math.abs(parsedCost)} ৳ কেটে সংশোধন করা হয়েছে!`);
+            alert(`✅ ${name} - এর হিসাব থেকে ${Math.abs(parsedCost)} ৳ কমানো হয়েছে। এই মাসে তার বর্তমান মোট বাজার: ${currentTotal} ৳`);
         } else {
-            alert(`🎉 ${name} - এর নামে ${parsedCost} ৳ বাজার খরচ যোগ করা হয়েছে!`);
+            alert(`🎉 ${name} - এর নামে নতুন ${parsedCost} ৳ বাজার যোগ করা হয়েছে। এই মাসে তার বর্তমান মোট বাজার: ${currentTotal} ৳`);
         }
     }
 
