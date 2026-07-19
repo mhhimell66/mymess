@@ -503,39 +503,29 @@
         });
     }
 
-    function submitMarketCost() {
-        const name = document.getElementById('market-member-dropdown').value;
-        const costVal = document.getElementById('market-cost-input').value.trim();
-        const selectedMonth = document.getElementById('month-filter').value;
 
-        if(!name) return alert("মেম্বার সিলেক্ট করুন!");
-        let parsedCost = parseFloat(costVal);
-        if(isNaN(parsedCost)) return alert("সঠিক সংখ্যা টাইপ করুন (উদা: ৫০০ অথবা -১০০)!");
+function submitMarketCost() {
+    const name = document.getElementById('market-member-dropdown').value;
+    const costVal = document.getElementById('market-cost-input').value.trim();
+    const selectedMonth = document.getElementById('month-filter').value;
 
-        if(!marketCostsList[selectedMonth]) marketCostsList[selectedMonth] = {};
-        
-        if(!marketCostsList[selectedMonth][name]) {
-            marketCostsList[selectedMonth][name] = [parsedCost];
-        } else {
-            marketCostsList[selectedMonth][name].push(parsedCost);
-        }
+    if(!name) return alert("মেম্বার সিলেক্ট করুন!");
+    let parsedCost = parseFloat(costVal);
+    if(isNaN(parsedCost)) return alert("সঠিক সংখ্যা টাইপ করুন!");
 
-        localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
-        document.getElementById('market-cost-input').value = "";
-        
-        updateMarketSummaryView();
-        updateLiveDashboard();
-        syncToCloud(true);
-        
-        let currentTotal = marketCostsList[selectedMonth][name].reduce((a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0), 0);
-        
-        if (parsedCost < 0) {
-            alert(`✅ ${name} - এর হিসাব থেকে ${Math.abs(parsedCost)} ৳ কমানো হয়েছে। এই মাসে তার বর্তমান মোট বাজার: ${currentTotal} ৳`);
-        } else {
-            alert(`🎉 ${name} - এর নামে নতুন ${parsedCost} ৳ বাজার যোগ করা হয়েছে। এই মাসে তার বর্তমান মোট বাজার: ${currentTotal} ৳`);
-        }
-    }
-
+    if(!marketCostsList[selectedMonth]) marketCostsList[selectedMonth] = {};
+    if(!marketCostsList[selectedMonth][name]) marketCostsList[selectedMonth][name] = [];
+    
+    marketCostsList[selectedMonth][name].push(parsedCost);
+    localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+    
+    // বাজার খরচের সাথেও সিঙ্ক কল করুন
+    syncToCloud(false); 
+    
+    alert("✅ বাজার খরচ যোগ হয়েছে এবং সিঙ্ক হচ্ছে!");
+    document.getElementById('market-cost-input').value = "";
+    updateMarketSummaryView();
+}
     function updateMarketSummaryView() {
         const listContainer = document.getElementById('market-summary-list');
         const selectedMonth = document.getElementById('month-filter').value;
@@ -763,6 +753,36 @@
         window.print(); 
         document.title = originalTitle;
     }
+    // ডাটা সেভ এবং ক্লাউড সিঙ্ক করার ফাংশন
+function saveDailyMeals() {
+    let date = document.getElementById('entry-date').value;
+    if(!date) return alert("তারিখ সিলেক্ট করুন!");
+    
+    // লোকাল ডাটাবেজে সেভ
+    if(!mealDatabase[date]) mealDatabase[date] = {};
+    members.forEach(name => {
+        mealDatabase[date][name] = temporaryMeals[name] || 0;
+    });
+    localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
+
+    // ক্লাউড সিঙ্ক
+    showLoader("ক্লাউডে সেভ হচ্ছে...");
+    fetch(GOOGLE_WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ members, mealDatabase, marketCostsList })
+    })
+    .then(() => {
+        hideLoader();
+        alert("🎉 ডাটা সেভ এবং ক্লাউডে আপলোড হয়েছে!");
+    })
+    .catch(err => {
+        hideLoader();
+        console.error(err);
+        alert("❌ সিঙ্ক হয়নি, নেটওয়ার্ক চেক করুন!");
+    });
+}
 </script>
 </body>
 </html>
