@@ -266,7 +266,6 @@
     </main>
 
 <script>
-    // 🔗 লাইন ২৬৬: এখানে আপনার গুগল স্ক্রিপ্ট থেকে পাওয়া Web App URL বসাবেন
     const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxX5Xg9C226g7MWutrU73gHGIoWVEtF9WolMEwyZrcnqoH6mV_1Y3h6nCS6xKG9UdL0MQ/exec";
 
     let members = [];
@@ -297,6 +296,48 @@
         filterDataByMonth();
         fetchFromCloud(); 
     };
+
+    function showLoader(text) {
+        const loader = document.getElementById('cloud-loader');
+        document.getElementById('cloud-loader-text').innerText = text;
+        loader.classList.remove('hidden');
+    }
+    
+    function hideLoader() { document.getElementById('cloud-loader').classList.add('hidden'); }
+
+    function syncToCloud(silent = false) {
+        if (!silent) showLoader("গুগল ড্রাইভে আপলোড হচ্ছে...");
+        let payload = { members: members, mealDatabase: mealDatabase, marketCostsList: marketCostsList };
+
+        fetch(GOOGLE_WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            if(!silent) { hideLoader(); alert("🎉 গুগল ড্রাইভ ক্লাউডে সফলভাবে সেভ হয়েছে!"); }
+            else hideLoader();
+        }).catch(err => { console.error(err); hideLoader(); });
+    }
+
+    function fetchFromCloud() {
+        showLoader("গুগল ড্রাইভ থেকে লাইভ ডাটা লোড হচ্ছে...");
+        fetch(GOOGLE_WEB_APP_URL)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.members) {
+                members = data.members;
+                mealDatabase = data.mealDatabase || {};
+                marketCostsList = data.marketCostsList || {};
+                
+                localStorage.setItem('messMembers', JSON.stringify(members));
+                localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
+                localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+                filterDataByMonth();
+            }
+            hideLoader();
+        }).catch(err => { console.error("Cloud error", err); hideLoader(); });
+    }
 
     function filterDataByMonth() {
         const selectedMonth = document.getElementById('month-filter').value; 
@@ -390,51 +431,6 @@
         `);
     }
 
-    function showLoader(text) {
-        const loader = document.getElementById('cloud-loader');
-        document.getElementById('cloud-loader-text').innerText = text;
-        loader.classList.remove('hidden');
-    }
-    
-    function hideLoader() { document.getElementById('cloud-loader').classList.add('hidden'); }
-
-    function syncToCloud(silent = false) {
-        if (GOOGLE_WEB_APP_URL && !GOOGLE_WEB_APP_URL.includes("exec")) {
-            if(!silent) showLoader("গুগল ড্রাইভে আপলোড হচ্ছে...");
-            let payload = { members: members, mealDatabase: mealDatabase, marketCostsList: marketCostsList };
-
-            fetch(GOOGLE_WEB_APP_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                if(!silent) { hideLoader(); alert("🎉 গুগল ড্রাইভ ক্লাউডে সফলভাবে সেভ হয়েছে!"); }
-            }).catch(err => { console.error(err); hideLoader(); });
-        }
-    }
-
-    function fetchFromCloud() {
-        if (GOOGLE_WEB_APP_URL && !GOOGLE_WEB_APP_URL.includes("exec")) {
-            showLoader("গুগল ড্রাইভ থেকে লাইভ ডাটা লোড হচ্ছে...");
-            fetch(GOOGLE_WEB_APP_URL)
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.members) {
-                    members = data.members;
-                    mealDatabase = data.mealDatabase || {};
-                    marketCostsList = data.marketCostsList || {};
-                    
-                    localStorage.setItem('messMembers', JSON.stringify(members));
-                    localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
-                    localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
-                    filterDataByMonth();
-                }
-                hideLoader();
-            }).catch(err => { console.error("Cloud error", err); hideLoader(); });
-        }
-    }
-
     function toggleTheme() {
         let current = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
         applyTheme(current);
@@ -507,7 +503,6 @@
         });
     }
 
-    // 🌟 ফিক্সড বাজার এন্ট্রি ফাংশন: এটি নতুন ইনপুটকে আগের হিসাবের সাথে যোগ করে দিবে
     function submitMarketCost() {
         const name = document.getElementById('market-member-dropdown').value;
         const costVal = document.getElementById('market-cost-input').value.trim();
@@ -519,7 +514,6 @@
 
         if(!marketCostsList[selectedMonth]) marketCostsList[selectedMonth] = {};
         
-        // যদি মেম্বারের আগে কোনো এন্ট্রি না থাকে তবে নতুন অ্যারে তৈরি করবে, নয়তো পূর্বের লিস্টে পুশ করবে
         if(!marketCostsList[selectedMonth][name]) {
             marketCostsList[selectedMonth][name] = [parsedCost];
         } else {
@@ -533,7 +527,6 @@
         updateLiveDashboard();
         syncToCloud(true);
         
-        // টোটাল কারেন্ট খরচ ক্যালকুলেট করে অ্যালার্ট দেখাবে
         let currentTotal = marketCostsList[selectedMonth][name].reduce((a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0), 0);
         
         if (parsedCost < 0) {
