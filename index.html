@@ -23,18 +23,18 @@
             .no-print, button, form, input, select, header, section:not(.print-area) { display: none !important; }
             .print-area { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; background: white !important; color: black !important; }
             table { width: 100% !important; border-collapse: collapse !important; margin-top: 15px; }
-            th, td { border: 1px solid #94a3b8 !important; padding: 10px !important; color: #000 !important; font-size: 14px !important; }
+            th, td { border: 1px solid #94a3b8 !important; padding: 8px !important; color: #000 !important; font-size: 12px !important; }
             th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .dark body, .dark .print-area { background-color: white !important; color: black !important; }
             .dark tr, .dark td, .dark th { color: black !important; border-color: #94a3b8 !important; }
-            .bg-emerald-50, .bg-slate-50 { background-color: #f8fafc !important; border: 1px solid #cbd5e1 !important; color: black !important; }
+            .bg-emerald-50, .bg-slate-50, .bg-purple-50, .bg-amber-50 { background-color: #f8fafc !important; border: 1px solid #cbd5e1 !important; color: black !important; }
             span { color: black !important; }
         }
     </style>
 </head>
 <body class="antialiased min-h-screen pb-12">
 
-    <!-- 🌐 Global Cloud Sync Indicator -->
+    <!-- Global Cloud Sync Indicator -->
     <div id="cloud-loader" class="fixed top-4 left-4 z-50 bg-slate-950/95 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-xl border border-slate-800 hidden">
         <i class="fa-solid fa-arrows-spin fa-spin text-emerald-400 text-sm"></i> <span id="cloud-loader-text">ক্লাউড সার্ভার সিঙ্ক হচ্ছে...</span>
     </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight">Mess Meal Manager <span class="text-emerald-400 font-bold text-xs px-2 py-0.5 rounded-md bg-emerald-950 border border-emerald-800 ml-1">🌐 ONLINE LIVE</span></h1>
-                    <p class="text-xs text-slate-400">মাল্টিপল বাজার এন্ট্রি ও অটো-যোগ ফিচার সমৃদ্ধ ম্যানেজার</p>
+                    <p class="text-xs text-slate-400">মাল্টিপল বাজার এন্ট্রি, বিল ও এডজাস্টমেন্ট সিস্টেম</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -69,27 +69,41 @@
     <main class="max-w-5xl mx-auto px-4 mt-6 grid grid-cols-1 gap-6">
 
         <!-- Live Summary Dashboard -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 no-print">
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl p-5 shadow-xs flex items-center justify-between">
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 no-print">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-2xl p-4 shadow-xs flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-blue-100 font-medium">মোট মিল সংখ্যা (<span class="view-month-lbl">...</span>)</p>
-                    <h3 class="text-3xl font-bold mt-1 tracking-tight" id="live-total-meals">0</h3>
+                    <p class="text-xs text-blue-100 font-medium">মোট মিল (<span class="view-month-lbl">...</span>)</p>
+                    <h3 class="text-2xl font-bold mt-1 tracking-tight" id="live-total-meals">0</h3>
                 </div>
-                <div class="bg-white/10 p-3 rounded-xl"><i class="fa-solid fa-utensils text-2xl opacity-90"></i></div>
+                <div class="bg-white/10 p-2 rounded-xl"><i class="fa-solid fa-utensils text-lg opacity-90"></i></div>
             </div>
-            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-5 shadow-xs flex items-center justify-between">
+            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-4 shadow-xs flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-emerald-100 font-medium">মোট বাজার খরচ (<span class="view-month-lbl">...</span>)</p>
-                    <h3 class="text-3xl font-bold mt-1 tracking-tight" id="live-total-cost">0 ৳</h3>
+                    <p class="text-xs text-emerald-100 font-medium">মোট বাজার খরচ</p>
+                    <h3 class="text-2xl font-bold mt-1 tracking-tight" id="live-total-cost">0 ৳</h3>
                 </div>
-                <div class="bg-white/10 p-3 rounded-xl"><i class="fa-solid fa-cart-shopping text-2xl opacity-90"></i></div>
+                <div class="bg-white/10 p-2 rounded-xl"><i class="fa-solid fa-cart-shopping text-lg opacity-90"></i></div>
             </div>
-            <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-2xl p-5 shadow-xs flex items-center justify-between">
+            <div class="bg-gradient-to-br from-purple-600 to-indigo-800 text-white rounded-2xl p-4 shadow-xs flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-amber-100 font-medium">লাইভ মিল রেট</p>
-                    <h3 class="text-3xl font-extrabold mt-1 tracking-tight" id="live-meal-rate">0.00 ৳</h3>
+                    <p class="text-xs text-purple-100 font-medium">মোট খালা বিল</p>
+                    <h3 class="text-2xl font-bold mt-1 tracking-tight" id="live-total-khala-bill">0 ৳</h3>
                 </div>
-                <div class="bg-white/10 p-3 rounded-xl"><i class="fa-solid fa-scale-balanced text-2xl"></i></div>
+                <div class="bg-white/10 p-2 rounded-xl"><i class="fa-solid fa-broom text-lg opacity-90"></i></div>
+            </div>
+            <div class="bg-gradient-to-br from-amber-600 to-orange-700 text-white rounded-2xl p-4 shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-amber-100 font-medium">অন্যান্য ফিক্সড বিল</p>
+                    <h3 class="text-2xl font-bold mt-1 tracking-tight" id="live-total-other-bills">0 ৳</h3>
+                </div>
+                <div class="bg-white/10 p-2 rounded-xl"><i class="fa-solid fa-bolt text-lg opacity-90"></i></div>
+            </div>
+            <div class="bg-gradient-to-br from-rose-500 to-red-600 text-white rounded-2xl p-4 shadow-xs flex items-center justify-between col-span-1 sm:col-span-2 lg:col-span-1">
+                <div>
+                    <p class="text-xs text-rose-100 font-medium">লাইভ মিল রেট</p>
+                    <h3 class="text-2xl font-extrabold mt-1 tracking-tight" id="live-meal-rate">0.00 ৳</h3>
+                </div>
+                <div class="bg-white/10 p-2 rounded-xl"><i class="fa-solid fa-scale-balanced text-lg"></i></div>
             </div>
         </section>
 
@@ -168,13 +182,13 @@
             </div>
         </section>
 
-        <!-- Market Cost Section (Dropdown) -->
+        <!-- Market Cost Section -->
         <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
             <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
                 <i class="fa-solid fa-basket-shopping text-emerald-600 dark:text-emerald-400"></i> বাজার খরচ বিবরণী
             </h3>
             <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 p-2.5 rounded-xl mb-4">
-                ℹ️ <b>মাল্টিপল এন্ট্রি রুলস:</b> একই মেম্বারের একাধিক আলাদা বাজার খরচ এন্ট্রি করলে তা অটোমেটিক পূর্বের খরচের সাথে <b>যোগ</b> হয়ে যাবে। কমাতে চাইলে সংখ্যার আগে মাইনাস (-) চিহ্ন দিন।
+                ℹ️ <b>মাল্টিপল এন্ট্রি রুলস:</b> একই মেম্বারের একাধিক আলাদা বাজার খরচ এন্ট্রি করলে তা অটোমেটিক যোগ হয়ে যাবে। কমাতে চাইলে সংখ্যার আগে মাইনাস (-) দিন।
             </p>
             
             <div class="flex flex-col sm:flex-row gap-4 items-end bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mb-4">
@@ -196,6 +210,60 @@
             <div>
                 <span class="text-xs font-bold text-slate-400 block mb-2">এই মাসের মোট বাজার খরচের সংক্ষিপ্ত তালিকা:</span>
                 <div id="market-summary-list" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold"></div>
+            </div>
+        </section>
+
+        <!-- 🆕 Khala & Other Bills Section -->
+        <section class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs p-6 no-print">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-3">
+                <i class="fa-solid fa-file-invoice-dollar text-purple-600 dark:text-purple-400"></i> খালা বিল ও অন্যান্য ফিক্সড বিল এন্ট্রি
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <!-- Khala Bill Box -->
+                <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-3">🧹 খালা বিল নির্ধারণ</h4>
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">মেম্বার সিলেক্ট করুন:</label>
+                            <select id="khala-member-dropdown" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden">
+                                <option value="">বাছাই করুন...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">খালা বিল (৳):</label>
+                            <input type="text" id="khala-bill-input" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden" placeholder="উদা: ৩০০">
+                        </div>
+                        <button class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-xl text-xs cursor-pointer shadow-xs" onclick="saveKhalaBill()">
+                            <i class="fa-solid fa-save"></i> খালা বিল সেভ করুন
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Others Bill Box -->
+                <div class="bg-slate-50 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-3">⚡ অন্যান্য ফিক্সড বিল (গ্যাস, ওয়াইফাই, পানি ইত্যাদি)</h4>
+                    <div class="flex flex-col gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">মেম্বার সিলেক্ট করুন:</label>
+                            <select id="others-member-dropdown" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden">
+                                <option value="">বাছাই করুন...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-1">অন্যান্য বিল (৳):</label>
+                            <input type="text" id="others-bill-input" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white font-semibold text-sm bg-white dark:bg-slate-950 focus:outline-hidden" placeholder="উদা: ২০০">
+                        </div>
+                        <button class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-xl text-xs cursor-pointer shadow-xs" onclick="saveOthersBill()">
+                            <i class="fa-solid fa-save"></i> অন্যান্য বিল সেভ করুন
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+                <span class="text-xs font-bold text-slate-400 block mb-2">এই মাসের বিল সমূহের সামারি (মেম্বারভিত্তিক):</span>
+                <div id="additional-bills-summary-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs font-semibold"></div>
             </div>
         </section>
 
@@ -230,7 +298,7 @@
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start border-b-2 border-slate-100 dark:border-slate-700 pb-5 gap-4">
                 <div class="text-left">
                     <span class="inline-block bg-emerald-100 text-emerald-800 font-bold text-xs uppercase tracking-widest px-3 py-1 rounded-full mb-2">চুড়ান্ত মেস রিপোর্ট</span>
-                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">মিল ও বাজার খরচ বিবরণী (Meal Summary)</h2>
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">মিল, ফিক্সড বিল ও দেনা-পাওনা সমন্বয় (Final Adjustment)</h2>
                     <p class="text-sm text-slate-500 font-medium mt-1">চলতি মাস: <span id="report-month-lbl">...</span></p>
                 </div>
                 <div class="flex items-center gap-2 no-print">
@@ -243,17 +311,20 @@
                 </div>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 my-6 text-sm font-semibold" id="summary-text"></div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 my-6 text-sm font-semibold" id="summary-text"></div>
             
             <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
-                <table class="w-full text-center text-sm">
+                <table class="w-full text-center text-xs sm:text-sm">
                     <thead>
                         <tr class="bg-slate-900 dark:bg-slate-950 text-white font-semibold">
-                            <th class="p-3 border border-slate-800 dark:border-slate-700">নাম</th>
-                            <th class="p-3 border border-slate-800 dark:border-slate-700">মোট মিল</th>
-                            <th class="p-3 border border-slate-800 dark:border-slate-700">মোট বাজার</th>
-                            <th class="p-3 border border-slate-800 dark:border-slate-700">মিল খরচ</th>
-                            <th class="p-3 border border-slate-800 dark:border-slate-700">অবস্থা (দেনা/পাওনা)</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700">নাম</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700">মিল সংখ্যা</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700">মিলের খরচ (৳)</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700 bg-purple-950 text-purple-200">খালা বিল (৳)</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700 bg-amber-950 text-amber-200">অন্যান্য বিল (৳)</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700">সর্বমোট খরচ (৳)</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700">বাজার জমা (৳)</th>
+                            <th class="p-2.5 border border-slate-800 dark:border-slate-700">নিট দেনা/পাওনা</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-700 dark:text-slate-300 font-medium" id="report-body"></tbody>
@@ -271,6 +342,8 @@
     let members = [];
     let mealDatabase = {};
     let marketCostsList = {}; 
+    let khalaBillsList = {}; 
+    let othersBillsList = {};
     let temporaryMeals = {};
 
     const banglaMonths = [
@@ -292,6 +365,8 @@
         if(localStorage.getItem('messMembers')) members = JSON.parse(localStorage.getItem('messMembers'));
         if(localStorage.getItem('mealDatabase')) mealDatabase = JSON.parse(localStorage.getItem('mealDatabase'));
         if(localStorage.getItem('marketCostsList')) marketCostsList = JSON.parse(localStorage.getItem('marketCostsList'));
+        if(localStorage.getItem('khalaBillsList')) khalaBillsList = JSON.parse(localStorage.getItem('khalaBillsList'));
+        if(localStorage.getItem('othersBillsList')) othersBillsList = JSON.parse(localStorage.getItem('othersBillsList'));
         
         filterDataByMonth();
         fetchFromCloud(); 
@@ -307,7 +382,13 @@
 
     function syncToCloud(silent = false) {
         if (!silent) showLoader("গুগল ড্রাইভে আপলোড হচ্ছে...");
-        let payload = { members: members, mealDatabase: mealDatabase, marketCostsList: marketCostsList };
+        let payload = { 
+            members: members, 
+            mealDatabase: mealDatabase, 
+            marketCostsList: marketCostsList,
+            khalaBillsList: khalaBillsList,
+            othersBillsList: othersBillsList 
+        };
 
         fetch(GOOGLE_WEB_APP_URL, {
             method: "POST",
@@ -329,10 +410,14 @@
                 members = data.members;
                 mealDatabase = data.mealDatabase || {};
                 marketCostsList = data.marketCostsList || {};
+                khalaBillsList = data.khalaBillsList || {};
+                othersBillsList = data.othersBillsList || {};
                 
                 localStorage.setItem('messMembers', JSON.stringify(members));
                 localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
                 localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+                localStorage.setItem('khalaBillsList', JSON.stringify(khalaBillsList));
+                localStorage.setItem('othersBillsList', JSON.stringify(othersBillsList));
                 filterDataByMonth();
             }
             hideLoader();
@@ -366,10 +451,14 @@
         const mealDropdown = document.getElementById('meal-member-dropdown');
         const marketDropdown = document.getElementById('market-member-dropdown');
         const individualSelect = document.getElementById('individual-member-select');
+        const khalaDropdown = document.getElementById('khala-member-dropdown');
+        const othersDropdown = document.getElementById('others-member-dropdown');
 
         const currentMealSel = mealDropdown.value;
         const currentMarketSel = marketDropdown.value;
         const currentIndSel = individualSelect.value;
+        const currentKhalaSel = khalaDropdown.value;
+        const currentOthersSel = othersDropdown.value;
 
         let optionsHtml = `<option value="">বাছাই করুন...</option>`;
         members.forEach(name => {
@@ -379,10 +468,14 @@
         mealDropdown.innerHTML = optionsHtml;
         marketDropdown.innerHTML = optionsHtml;
         individualSelect.innerHTML = optionsHtml;
+        khalaDropdown.innerHTML = optionsHtml;
+        othersDropdown.innerHTML = optionsHtml;
 
         if(members.includes(currentMealSel)) mealDropdown.value = currentMealSel;
         if(members.includes(currentMarketSel)) marketDropdown.value = currentMarketSel;
         if(members.includes(currentIndSel)) individualSelect.value = currentIndSel;
+        if(members.includes(currentKhalaSel)) khalaDropdown.value = currentKhalaSel;
+        if(members.includes(currentOthersSel)) othersDropdown.value = currentOthersSel;
     }
 
     function showIndividualMealLog() {
@@ -453,6 +546,8 @@
         
         manageList.innerHTML = "";
         if(!marketCostsList[selectedMonth]) marketCostsList[selectedMonth] = {};
+        if(!khalaBillsList[selectedMonth]) khalaBillsList[selectedMonth] = {};
+        if(!othersBillsList[selectedMonth]) othersBillsList[selectedMonth] = {};
 
         members.forEach(name => {
             manageList.innerHTML += `
@@ -465,6 +560,7 @@
 
         loadSavedMealsForDate();
         updateMarketSummaryView();
+        updateAdditionalBillsSummaryView();
         buildMonthlySheet(); 
         updateLiveDashboard();
     }
@@ -503,29 +599,65 @@
         });
     }
 
+    function submitMarketCost() {
+        const name = document.getElementById('market-member-dropdown').value;
+        const costVal = document.getElementById('market-cost-input').value.trim();
+        const selectedMonth = document.getElementById('month-filter').value;
 
-function submitMarketCost() {
-    const name = document.getElementById('market-member-dropdown').value;
-    const costVal = document.getElementById('market-cost-input').value.trim();
-    const selectedMonth = document.getElementById('month-filter').value;
+        if(!name) return alert("মেম্বার সিলেক্ট করুন!");
+        let parsedCost = parseFloat(costVal);
+        if(isNaN(parsedCost)) return alert("সঠিক সংখ্যা টাইপ করুন!");
 
-    if(!name) return alert("মেম্বার সিলেক্ট করুন!");
-    let parsedCost = parseFloat(costVal);
-    if(isNaN(parsedCost)) return alert("সঠিক সংখ্যা টাইপ করুন!");
+        if(!marketCostsList[selectedMonth]) marketCostsList[selectedMonth] = {};
+        if(!marketCostsList[selectedMonth][name]) marketCostsList[selectedMonth][name] = [];
+        
+        marketCostsList[selectedMonth][name].push(parsedCost);
+        localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+        
+        syncToCloud(false); 
+        alert("✅ বাজার খরচ যোগ হয়েছে এবং সিঙ্ক হচ্ছে!");
+        document.getElementById('market-cost-input').value = "";
+        updateMarketSummaryView();
+    }
 
-    if(!marketCostsList[selectedMonth]) marketCostsList[selectedMonth] = {};
-    if(!marketCostsList[selectedMonth][name]) marketCostsList[selectedMonth][name] = [];
-    
-    marketCostsList[selectedMonth][name].push(parsedCost);
-    localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
-    
-    // বাজার খরচের সাথেও সিঙ্ক কল করুন
-    syncToCloud(false); 
-    
-    alert("✅ বাজার খরচ যোগ হয়েছে এবং সিঙ্ক হচ্ছে!");
-    document.getElementById('market-cost-input').value = "";
-    updateMarketSummaryView();
-}
+    function saveKhalaBill() {
+        const name = document.getElementById('khala-member-dropdown').value;
+        const costVal = document.getElementById('khala-bill-input').value.trim();
+        const selectedMonth = document.getElementById('month-filter').value;
+
+        if(!name) return alert("মেম্বার সিলেক্ট করুন!");
+        let parsed = parseFloat(costVal) || 0;
+
+        if(!khalaBillsList[selectedMonth]) khalaBillsList[selectedMonth] = {};
+        khalaBillsList[selectedMonth][name] = parsed;
+        
+        localStorage.setItem('khalaBillsList', JSON.stringify(khalaBillsList));
+        syncToCloud(false);
+        alert("✅ খালা বিল সেভ হয়েছে!");
+        document.getElementById('khala-bill-input').value = "";
+        updateAdditionalBillsSummaryView();
+        updateLiveDashboard();
+    }
+
+    function saveOthersBill() {
+        const name = document.getElementById('others-member-dropdown').value;
+        const costVal = document.getElementById('others-bill-input').value.trim();
+        const selectedMonth = document.getElementById('month-filter').value;
+
+        if(!name) return alert("মেম্বার সিলেক্ট করুন!");
+        let parsed = parseFloat(costVal) || 0;
+
+        if(!othersBillsList[selectedMonth]) othersBillsList[selectedMonth] = {};
+        othersBillsList[selectedMonth][name] = parsed;
+        
+        localStorage.setItem('othersBillsList', JSON.stringify(othersBillsList));
+        syncToCloud(false);
+        alert("✅ অন্যান্য বিল সেভ হয়েছে!");
+        document.getElementById('others-bill-input').value = "";
+        updateAdditionalBillsSummaryView();
+        updateLiveDashboard();
+    }
+
     function updateMarketSummaryView() {
         const listContainer = document.getElementById('market-summary-list');
         const selectedMonth = document.getElementById('month-filter').value;
@@ -541,6 +673,30 @@ function submitMarketCost() {
                 <div class="bg-white dark:bg-slate-700 p-2.5 border border-slate-200 dark:border-slate-600 rounded-xl flex justify-between items-center shadow-3xs">
                     <span class="text-slate-700 dark:text-slate-300">${name}</span>
                     <span class="bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 px-2 py-0.5 rounded">${totalCost} ৳</span>
+                </div>
+            `;
+        });
+    }
+
+    function updateAdditionalBillsSummaryView() {
+        const listContainer = document.getElementById('additional-bills-summary-list');
+        const selectedMonth = document.getElementById('month-filter').value;
+        listContainer.innerHTML = "";
+
+        const monthKhala = khalaBillsList[selectedMonth] || {};
+        const monthOthers = othersBillsList[selectedMonth] || {};
+
+        members.forEach(name => {
+            let kVal = parseFloat(monthKhala[name]) || 0;
+            let oVal = parseFloat(monthOthers[name]) || 0;
+            
+            listContainer.innerHTML += `
+                <div class="bg-white dark:bg-slate-700 p-2.5 border border-slate-200 dark:border-slate-600 rounded-xl flex justify-between items-center shadow-3xs">
+                    <span class="text-slate-700 dark:text-slate-300">${name}</span>
+                    <span class="text-xs">
+                        <span class="text-purple-600 dark:text-purple-400 font-bold">খালা: ${kVal}৳</span> | 
+                        <span class="text-amber-600 dark:text-amber-400 font-bold">অন্যান্য: ${oVal}৳</span>
+                    </span>
                 </div>
             `;
         });
@@ -583,8 +739,13 @@ function submitMarketCost() {
             members = members.filter(m => m !== name);
             localStorage.setItem('messMembers', JSON.stringify(members));
             if(marketCostsList[selectedMonth]) delete marketCostsList[selectedMonth][name];
+            if(khalaBillsList[selectedMonth]) delete khalaBillsList[selectedMonth][name];
+            if(othersBillsList[selectedMonth]) delete othersBillsList[selectedMonth][name];
             
             localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+            localStorage.setItem('khalaBillsList', JSON.stringify(khalaBillsList));
+            localStorage.setItem('othersBillsList', JSON.stringify(othersBillsList));
+
             updateDropdownSelectors();
             filterDataByMonth(); 
             syncToCloud(false);
@@ -609,9 +770,14 @@ function submitMarketCost() {
             document.getElementById('entry-date').value = `${nextMonthStr}-01`;
 
             marketCostsList[nextMonthStr] = {};
+            khalaBillsList[nextMonthStr] = {};
+            othersBillsList[nextMonthStr] = {};
             members.forEach(name => { marketCostsList[nextMonthStr][name] = [0]; });
 
             localStorage.setItem('marketCostsList', JSON.stringify(marketCostsList));
+            localStorage.setItem('khalaBillsList', JSON.stringify(khalaBillsList));
+            localStorage.setItem('othersBillsList', JSON.stringify(othersBillsList));
+            
             document.getElementById('result-section').classList.add('hidden');
             filterDataByMonth(); syncToCloud(true);
         }
@@ -619,29 +785,49 @@ function submitMarketCost() {
 
     function saveDailyMeals() {
         let date = document.getElementById('entry-date').value;
-        if(!date) return alert("তারিখ দিন!");
-        if(!mealDatabase[date]) mealDatabase[date] = {};
+        if(!date) return alert("তারিখ সিলেক্ট করুন!");
         
+        if(!mealDatabase[date]) mealDatabase[date] = {};
         members.forEach(name => {
-            mealDatabase[date][name] = temporaryMeals[name] !== undefined ? temporaryMeals[name] : 0;
+            mealDatabase[date][name] = temporaryMeals[name] || 0;
         });
-
         localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
-        buildMonthlySheet(); 
-        updateLiveDashboard();
-        showIndividualMealLog();
-        syncToCloud(false);
-        alert("🎉 আজকের সব মিল ডাটাবেজে ফাইনাল সেভ করা হয়েছে!");
+
+        showLoader("ক্লাউডে সেভ হচ্ছে...");
+        fetch(GOOGLE_WEB_APP_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ members, mealDatabase, marketCostsList, khalaBillsList, othersBillsList })
+        })
+        .then(() => {
+            hideLoader();
+            buildMonthlySheet(); 
+            updateLiveDashboard();
+            showIndividualMealLog();
+            alert("🎉 আজকের সব মিল ডাটাবেজে ফাইনাল সেভ করা হয়েছে!");
+        })
+        .catch(err => {
+            hideLoader();
+            console.error(err);
+            alert("❌ সিঙ্ক হয়নি, নেটওয়ার্ক চেক করুন!");
+        });
     }
 
     function updateLiveDashboard() {
         const selectedMonth = document.getElementById('month-filter').value;
-        let totalMeals = 0; let totalMarketCost = 0;
+        let totalMeals = 0; let totalMarketCost = 0; 
+        let totalKhalaBill = 0; let totalOthersBill = 0;
         
         const monthCosts = marketCostsList[selectedMonth] || {};
+        const monthKhala = khalaBillsList[selectedMonth] || {};
+        const monthOthers = othersBillsList[selectedMonth] || {};
+
         members.forEach(name => {
             let mSum = (monthCosts[name] || [0]).reduce((a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0), 0);
             totalMarketCost += mSum;
+            totalKhalaBill += (parseFloat(monthKhala[name]) || 0);
+            totalOthersBill += (parseFloat(monthOthers[name]) || 0);
         });
         if (totalMarketCost < 0) totalMarketCost = 0;
         
@@ -656,6 +842,8 @@ function submitMarketCost() {
         let mealRate = totalMeals > 0 ? totalMarketCost / totalMeals : 0;
         document.getElementById('live-total-meals').innerText = totalMeals.toFixed(1).replace('.0', '');
         document.getElementById('live-total-cost').innerText = totalMarketCost.toLocaleString('bn-BD') + " ৳";
+        document.getElementById('live-total-khala-bill').innerText = totalKhalaBill.toLocaleString('bn-BD') + " ৳";
+        document.getElementById('live-total-other-bills').innerText = totalOthersBill.toLocaleString('bn-BD') + " ৳";
         document.getElementById('live-meal-rate').innerText = mealRate.toFixed(2) + " ৳";
     }
 
@@ -690,13 +878,20 @@ function submitMarketCost() {
 
     function calculateFinalSummary() {
         const selectedMonth = document.getElementById('month-filter').value;
-        let totalMeals = 0; let totalMarketCost = 0; let memberTotalMeals = {};
+        let totalMeals = 0; let totalMarketCost = 0; 
+        let totalKhalaAll = 0; let totalOthersAll = 0;
+        let memberTotalMeals = {};
         
         const monthCosts = marketCostsList[selectedMonth] || {};
+        const monthKhala = khalaBillsList[selectedMonth] || {};
+        const monthOthers = othersBillsList[selectedMonth] || {};
+
         members.forEach(name => {
             memberTotalMeals[name] = 0;
             let mSum = (monthCosts[name] || [0]).reduce((a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0), 0);
             totalMarketCost += mSum;
+            totalKhalaAll += (parseFloat(monthKhala[name]) || 0);
+            totalOthersAll += (parseFloat(monthOthers[name]) || 0);
         });
         if (totalMarketCost < 0) totalMarketCost = 0;
         
@@ -713,29 +908,40 @@ function submitMarketCost() {
         let mealRate = totalMeals > 0 ? totalMarketCost / totalMeals : 0;
 
         document.getElementById('summary-text').innerHTML = `
-            <div class="bg-white dark:bg-slate-800 p-3 border border-slate-200 dark:border-slate-700 rounded-xl text-center"><span class="text-xs text-slate-400">মোট মিল</span><span class="text-lg font-bold block text-slate-800 dark:text-slate-100">${totalMeals.toFixed(1).replace('.0', '')} টি</span></div>
-            <div class="bg-white dark:bg-slate-800 p-3 border border-slate-200 dark:border-slate-700 rounded-xl text-center"><span class="text-xs text-slate-400">মোট বাজার</span><span class="text-lg font-bold block text-slate-800 dark:text-slate-100">${totalMarketCost.toFixed(2)} ৳</span></div>
-            <div class="bg-emerald-50 dark:bg-emerald-950/40 p-3 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center"><span class="text-xs text-emerald-600 dark:text-emerald-400 block">ফাইনাল মিল রেট</span><span class="text-xl font-black text-emerald-700 dark:text-emerald-300">${mealRate.toFixed(4)} ৳</span></div>
+            <div class="bg-white dark:bg-slate-800 p-3 border border-slate-200 dark:border-slate-700 rounded-xl text-center"><span class="text-xs text-slate-400 block">মোট মিল</span><span class="text-base font-bold block text-slate-800 dark:text-slate-100">${totalMeals.toFixed(1).replace('.0', '')} টি</span></div>
+            <div class="bg-white dark:bg-slate-800 p-3 border border-slate-200 dark:border-slate-700 rounded-xl text-center"><span class="text-xs text-slate-400 block">মোট বাজার</span><span class="text-base font-bold block text-slate-800 dark:text-slate-100">${totalMarketCost.toFixed(1)} ৳</span></div>
+            <div class="bg-purple-50 dark:bg-purple-950/40 p-3 border border-purple-200 dark:border-purple-800 rounded-xl text-center"><span class="text-xs text-purple-600 dark:text-purple-400 block">মোট খালা বিল</span><span class="text-base font-bold text-purple-700 dark:text-purple-300">${totalKhalaAll.toFixed(1)} ৳</span></div>
+            <div class="bg-amber-50 dark:bg-amber-950/40 p-3 border border-amber-200 dark:border-amber-800 rounded-xl text-center"><span class="text-xs text-amber-600 dark:text-amber-400 block">অন্যান্য বিল</span><span class="text-base font-bold text-amber-700 dark:text-amber-300">${totalOthersAll.toFixed(1)} ৳</span></div>
+            <div class="bg-emerald-50 dark:bg-emerald-950/40 p-3 border border-emerald-200 dark:border-emerald-800 rounded-xl text-center"><span class="text-xs text-emerald-600 dark:text-emerald-400 block">ফাইনাল মিল রেট</span><span class="text-lg font-black text-emerald-700 dark:text-emerald-300">${mealRate.toFixed(4)} ৳</span></div>
         `;
 
         const tbody = document.getElementById('report-body'); tbody.innerHTML = "";
         members.forEach(name => {
             let meals = memberTotalMeals[name];
-            let cost = (monthCosts[name] || [0]).reduce((a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0), 0);
-            if (cost < 0) cost = 0;
+            let marketPaid = (monthCosts[name] || [0]).reduce((a, b) => (parseFloat(a) || 0) + (parseFloat(b) || 0), 0);
+            if (marketPaid < 0) marketPaid = 0;
             
-            let mealCost = meals * mealRate; let balance = cost - mealCost;
+            let khala = parseFloat(monthKhala[name]) || 0;
+            let others = parseFloat(monthOthers[name]) || 0;
+
+            let mealCost = meals * mealRate; 
+            let memberTotalCost = mealCost + khala + others;
+            let balance = marketPaid - memberTotalCost;
+
             let statusStr = balance >= 0 ? 
                 `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5 rounded text-xs">পাবে (+) ${balance.toFixed(2)} ৳</span>` : 
                 `<span class="bg-rose-50 text-rose-700 border border-rose-200 font-bold px-2 py-0.5 rounded text-xs">দিবে (-) ${Math.abs(balance).toFixed(2)} ৳</span>`;
 
             tbody.innerHTML += `
                 <tr class="text-center">
-                    <td class="p-3 border dark:border-slate-700 font-bold">${name}</td>
-                    <td class="p-3 border dark:border-slate-700">${meals.toFixed(1).replace('.0', '')} টি</td>
-                    <td class="p-3 border dark:border-slate-700 font-semibold">${cost.toFixed(1)} ৳</td>
-                    <td class="p-3 border dark:border-slate-700 text-slate-500 dark:text-slate-400">${mealCost.toFixed(1)} ৳</td>
-                    <td class="p-3 border dark:border-slate-700">${statusStr}</td>
+                    <td class="p-2.5 border dark:border-slate-700 font-bold">${name}</td>
+                    <td class="p-2.5 border dark:border-slate-700">${meals.toFixed(1).replace('.0', '')} টি</td>
+                    <td class="p-2.5 border dark:border-slate-700 text-slate-600 dark:text-slate-400">${mealCost.toFixed(1)} ৳</td>
+                    <td class="p-2.5 border dark:border-slate-700 text-purple-700 dark:text-purple-400 font-bold bg-purple-50/50 dark:bg-purple-950/20">${khala.toFixed(1)} ৳</td>
+                    <td class="p-2.5 border dark:border-slate-700 text-amber-700 dark:text-amber-400 font-bold bg-amber-50/50 dark:bg-amber-950/20">${others.toFixed(1)} ৳</td>
+                    <td class="p-2.5 border dark:border-slate-700 font-bold text-slate-800 dark:text-slate-200">${memberTotalCost.toFixed(1)} ৳</td>
+                    <td class="p-2.5 border dark:border-slate-700 font-bold text-emerald-600 dark:text-emerald-400">${marketPaid.toFixed(1)} ৳</td>
+                    <td class="p-2.5 border dark:border-slate-700">${statusStr}</td>
                 </tr>
             `;
         });
@@ -753,36 +959,6 @@ function submitMarketCost() {
         window.print(); 
         document.title = originalTitle;
     }
-    // ডাটা সেভ এবং ক্লাউড সিঙ্ক করার ফাংশন
-function saveDailyMeals() {
-    let date = document.getElementById('entry-date').value;
-    if(!date) return alert("তারিখ সিলেক্ট করুন!");
-    
-    // লোকাল ডাটাবেজে সেভ
-    if(!mealDatabase[date]) mealDatabase[date] = {};
-    members.forEach(name => {
-        mealDatabase[date][name] = temporaryMeals[name] || 0;
-    });
-    localStorage.setItem('mealDatabase', JSON.stringify(mealDatabase));
-
-    // ক্লাউড সিঙ্ক
-    showLoader("ক্লাউডে সেভ হচ্ছে...");
-    fetch(GOOGLE_WEB_APP_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ members, mealDatabase, marketCostsList })
-    })
-    .then(() => {
-        hideLoader();
-        alert("🎉 ডাটা সেভ এবং ক্লাউডে আপলোড হয়েছে!");
-    })
-    .catch(err => {
-        hideLoader();
-        console.error(err);
-        alert("❌ সিঙ্ক হয়নি, নেটওয়ার্ক চেক করুন!");
-    });
-}
 </script>
 </body>
 </html>
